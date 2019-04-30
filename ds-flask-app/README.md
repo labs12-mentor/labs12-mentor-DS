@@ -18,7 +18,7 @@ Build the container
 
 Run the container
 
-`docker run -p 5000:5000 --env-file ./.env`
+`docker run -p 5000:5000 --env-file ./.env mentor-app`
 
 `-p` maps a port inside the container to your local machine.
 
@@ -32,7 +32,7 @@ See more about the EBCLI [here](https://docs.aws.amazon.com/elasticbeanstalk/lat
 
 Please note, in all of the below **mentor-app** is a stand in for the name of your application. This name can be changed as necessary.
 
-Initialize the EB docker environment
+Initialize the EB docker environment. This only needs to be performed for the first deploy.
 
 `eb init -p docker mentor-app`
 
@@ -44,11 +44,15 @@ Test the application locally
 
 - If all works well, deploy to EB.
 
-Create app on EB
+Create app on EB. This only needs to be performed for the first deploy.
 
 `eb create mentor-app`
 
 - This will take a while to copy over all files. It will give relevant status updates.
+
+If the application has already been created, to deploy a new version
+
+`eb deploy`
 
 Open the app
 
