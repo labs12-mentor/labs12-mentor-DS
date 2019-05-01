@@ -8,13 +8,12 @@ import psycopg2 as pg
 
 
 # database connection parameters
-PORT = os.environ.get('PORT')
+PORT = int(os.environ.get('PORT'))
 URL = os.environ.get('URL')
 USER = os.environ.get('USER')
 PASS = os.environ.get('PASS')
 DBNAME = os.environ.get('DBNAME')
-
-# TODO - initiate connection using psycopg2
+TIMEOUT = 5
 
 
 # EB looks for an 'application' callable by default.
@@ -26,10 +25,28 @@ def hello_world():
     return 'Hello world'
 
 
+@app.route('/testconnection')
+def test_connection():
+    """
+    Tests connection to backend database
+    """
+    try:
+        conn = pg.connect(host=URL,
+                          port=PORT,
+                          dbname=DBNAME,
+                          user=USER,
+                          password=PASS,
+                          connect_timeout=TIMEOUT)
+        conn.close()
+        return 'Connection Successful!'
+    except BaseException as e:
+        return 'An exception occurred when connecting: {}'.format(e)
+
+
 @app.route('/matches/<org_id>')
 def organization_matches(org_id=1):
     """
-    Returns JSON object of mentor-mentee matches for a given organization
+    Writes new matches into table for a given organization
 
     Parameters
     ----------
@@ -42,12 +59,25 @@ def organization_matches(org_id=1):
 
     """
     try:
-        pass
+        # connect to database
+        conn = pg.connect(host=URL,
+                          port=PORT,
+                          dbname=DBNAME,
+                          user=USER,
+                          password=PASS,
+                          connect_timeout=TIMEOUT)
+        cursor = conn.cursor()
+
         # TODO : get mentees in need of match
 
         # TODO : for each mentee get mentors that would be possible matches (top 5)
 
         # TODO : write matches into match table
+
+        # TODO : commit transaction
+
+        cursor.close()
+        conn.close()
 
     except:
         # TODO: handle exceptions
